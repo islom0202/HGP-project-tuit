@@ -6,7 +6,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import registration.uz.hgpuserregistration.Categories.Entity.Category;
 import registration.uz.hgpuserregistration.Categories.Repository.CategoryRepository;
 import registration.uz.hgpuserregistration.Registration.Entity.Gender;
 import registration.uz.hgpuserregistration.Registration.Entity.UserImage;
@@ -90,10 +89,10 @@ public class UserProfileService {
     public void setImage(UserDetails userDetails, MultipartFile file) throws IOException {
         UserProfile userProfile = userProfileRepository.findByLogin(userDetails.getUsername());
         UserImage userImage = new UserImage();
-            userImage.setImage(file.getBytes());
-            userImage.setUserProfile(userProfile);
-            userProfile.setUserImage(userImage);
-            userImageRepo.save(userImage);
+        userImage.setImage(file.getBytes());
+        userImage.setUserProfile(userProfile);
+        userProfile.setUserImage(userImage);
+        userImageRepo.save(userImage);
     }
 
     public UserProfile getByPassportSerialNumber(String passportSerialNumber) {
