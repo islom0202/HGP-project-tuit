@@ -1,7 +1,6 @@
 package registration.uz.hgpuserregistration.Registration.Controller;
 
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,7 +18,6 @@ import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
 import registration.uz.hgpuserregistration.Registration.Entity.VerificationToken;
 import registration.uz.hgpuserregistration.Registration.Model.LoginRequest;
 import registration.uz.hgpuserregistration.Registration.Model.UserProfileRequest;
-import registration.uz.hgpuserregistration.Registration.Respository.UserProfileRepository;
 import registration.uz.hgpuserregistration.Registration.Respository.VerificationTokenRepo;
 import registration.uz.hgpuserregistration.Registration.Service.UserProfileService;
 
@@ -31,18 +29,18 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class RegistrationController {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
-    @Autowired
-    private EmailService emailService;
-    @Autowired
-    private VerificationTokenRepo verificationTokenRepo;
+    private final AuthenticationManager authenticationManager;
+
+    private final EmailService emailService;
+
+    private final VerificationTokenRepo verificationTokenRepo;
     private final UserProfileService userProfileService;
     private final JwtTokenProvider jwtTokenProvider;
-    @Autowired
-    private UserProfileRepository userProfileRepository;
 
-    public RegistrationController(UserProfileService userProfileService, JwtTokenProvider jwtTokenProvider) {
+    public RegistrationController(AuthenticationManager authenticationManager, EmailService emailService, VerificationTokenRepo verificationTokenRepo, UserProfileService userProfileService, JwtTokenProvider jwtTokenProvider) {
+        this.authenticationManager = authenticationManager;
+        this.emailService = emailService;
+        this.verificationTokenRepo = verificationTokenRepo;
         this.userProfileService = userProfileService;
         this.jwtTokenProvider = jwtTokenProvider;
     }

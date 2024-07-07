@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
 import registration.uz.hgpuserregistration.Registration.Respository.UserProfileRepository;
@@ -13,13 +12,19 @@ import java.util.Optional;
 
 @Service
 public class WebSocketDataService {
-    private ObjectMapper objectMapper = new ObjectMapper();
-    @Autowired
-    private DetectorRepository detectorRepository;
-    @Autowired
-    private UserProfileRepository userProfileRepository;
-    @Autowired
-    private EntityManager entityManager;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
+    private final DetectorRepository detectorRepository;
+
+    private final UserProfileRepository userProfileRepository;
+
+    private final EntityManager entityManager;
+
+    public WebSocketDataService(DetectorRepository detectorRepository, UserProfileRepository userProfileRepository, EntityManager entityManager) {
+        this.detectorRepository = detectorRepository;
+        this.userProfileRepository = userProfileRepository;
+        this.entityManager = entityManager;
+    }
 
     @Transactional
     public void handleIncomingData(String payload) {
