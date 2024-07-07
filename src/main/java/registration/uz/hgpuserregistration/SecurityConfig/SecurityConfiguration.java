@@ -35,15 +35,17 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(SWAGGER_URLS).permitAll()
                         .requestMatchers("/api/register").permitAll()
-                        .requestMatchers("/api/order/**").permitAll()
+                        .requestMatchers("/api/order").permitAll()
                         .requestMatchers("/api/login").permitAll()
                         .requestMatchers("/api/verify").permitAll()
+                        //delete has to be for admin only
+                        .requestMatchers("/api/delete/**").permitAll()
                         .requestMatchers("/api/contact/send/message").hasRole("USER")
                         .requestMatchers("/api/emergency/add"
                         ,"/api/list").hasRole("ADMIN")
-                        .requestMatchers("/api/emergency/list").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/experts/get", "/api/experts/image/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/experts/add/details").hasRole("ADMIN")
+                        .requestMatchers("/api/contact/get/messages", "/api/list").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
         JwtConfig jwtConfig = new JwtConfig(jwtTokenProvider);

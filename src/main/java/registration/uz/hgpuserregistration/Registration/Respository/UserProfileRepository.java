@@ -7,6 +7,8 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Repository;
 import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
 
+import java.util.Optional;
+
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
     UserProfile findByLogin(String login);
@@ -17,4 +19,5 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
 
     UserProfile findByPassportSerialNumber(String passportSerialNumber);
 
+    Optional<UserProfile> findByDetectorData_DetectorId(String detectorId);
 }

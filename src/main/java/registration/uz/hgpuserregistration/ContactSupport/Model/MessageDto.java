@@ -10,7 +10,9 @@ import lombok.Setter;
 @Data
 @Builder
 public class MessageDto {
-    private String title;
+    private String firstname;
+    private String lastname;
+    private String phoneNumber;
     private String message;
     private String email;
 }

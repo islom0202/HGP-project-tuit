@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import registration.uz.hgpuserregistration.Categories.Repository.CategoryRepository;
+import registration.uz.hgpuserregistration.Order.OrderRepository;
 import registration.uz.hgpuserregistration.Registration.Entity.Gender;
 import registration.uz.hgpuserregistration.Registration.Entity.UserImage;
 import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
@@ -14,6 +14,7 @@ import registration.uz.hgpuserregistration.Registration.Entity.UserRole;
 import registration.uz.hgpuserregistration.Registration.Model.UserProfileRequest;
 import registration.uz.hgpuserregistration.Registration.Respository.UserImageRepo;
 import registration.uz.hgpuserregistration.Registration.Respository.UserProfileRepository;
+import registration.uz.hgpuserregistration.Registration.Respository.VerificationTokenRepo;
 
 import java.io.IOException;
 import java.util.regex.Matcher;
@@ -23,16 +24,18 @@ import java.util.regex.Pattern;
 @AllArgsConstructor
 public class UserProfileService {
     private final UserProfileRepository userProfileRepository;
-    private final CategoryRepository categoryRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserImageRepo userImageRepo;
+    private final OrderRepository orderRepository;
+    private final VerificationTokenRepo verificationTokenRepo;
+    private final UserImageRepo imageRepository;
 
     public boolean existsUser(UserProfileRequest request) {
         return userProfileRepository.existsByPhone(request.getPhone());
     }
 
     @Transactional
-    public UserProfile save(UserProfileRequest request) throws IOException {
+    public UserProfile save(UserProfileRequest request) {
         UserProfile userProfile = new UserProfile();
         userProfile.setFirstname(request.getFirstname());
         userProfile.setLastname(request.getLastname());
@@ -97,5 +100,19 @@ public class UserProfileService {
 
     public UserProfile getByPassportSerialNumber(String passportSerialNumber) {
         return userProfileRepository.findByPassportSerialNumber(passportSerialNumber);
+    }
+
+    @Transactional
+    public void delete(Long id) {
+        orderRepository.deleteByUserProfile_Id(id);
+        verificationTokenRepo.deleteByUser_Id(id);
+        imageRepository.deleteByUserProfile_Id(id);
+        deleteUser(id);
+    }
+
+
+
+    private void deleteUser(Long id) {
+        userProfileRepository.deleteById(id);
     }
 }

@@ -6,8 +6,6 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
 import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.info.License;
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 
@@ -28,11 +26,9 @@ import io.swagger.v3.oas.annotations.servers.Server;
         ),
         servers = @Server(
                 description = "Local En",
-                url = "http://localhost:8080"
-        ),
-        security = @SecurityRequirement(
-                name = "bearerAuth"
+                url = "http://localhost:8081"
         )
+        //security =
 )
 @SecurityScheme(
         name = "bearerAuth",
@@ -43,4 +39,5 @@ import io.swagger.v3.oas.annotations.servers.Server;
         in = SecuritySchemeIn.HEADER
 )
 public class OpenApi {
+
 }

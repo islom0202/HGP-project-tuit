@@ -3,6 +3,8 @@ package registration.uz.hgpuserregistration.Order;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import registration.uz.hgpuserregistration.DetectorData.DetectorData;
+import registration.uz.hgpuserregistration.DetectorData.DetectorRepository;
 import registration.uz.hgpuserregistration.Exception.UserProfileNotFoundException;
 import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
 import registration.uz.hgpuserregistration.Registration.Respository.UserProfileRepository;
@@ -15,6 +17,7 @@ import java.util.List;
 public class OrderService {
     private final OrderRepository orderRepository;
     private final UserProfileRepository profileRepository;
+    private final DetectorRepository detectorRepository;
 
     public boolean existsOrder(String passportSerialNumber) {
         UserProfile userProfile = profileRepository.findByPassportSerialNumber(passportSerialNumber);
@@ -28,10 +31,15 @@ public class OrderService {
             UserOrder userOrder = new UserOrder();
             userOrder.setOrderAddress(request.getOrderAddress());
             userOrder.setUserProfile(userProfile);
-            userProfile.setDetectorId(userProfile.getPassportSerialNumber());
             userOrder.setOrderDate(new Date());
-            userProfile.setLogin(userProfile.getDetectorId());
-
+            userProfile.setLogin(userProfile.getPassportSerialNumber());
+            //setting and saving data in detector_data table
+            DetectorData detectorData = new DetectorData();
+            detectorData.setDetectorId(userProfile.getPassportSerialNumber());
+            detectorData.setUserId(userProfile);
+            detectorRepository.save(detectorData);
+            //userProfile.setDetectorData(detectorData);
+            //saving order data in order table
             orderRepository.save(userOrder);
             return userProfile.getLogin();
         } else {

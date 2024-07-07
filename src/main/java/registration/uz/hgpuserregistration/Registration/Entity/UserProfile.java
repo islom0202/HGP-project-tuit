@@ -3,6 +3,7 @@ package registration.uz.hgpuserregistration.Registration.Entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import registration.uz.hgpuserregistration.DetectorData.DetectorData;
 
 import java.io.Serializable;
 
@@ -33,11 +34,6 @@ public class UserProfile implements Serializable {
     private Gender gender;
     @Enumerated(EnumType.STRING)
     private UserRole role;
-    @JoinColumn(
-            name = "detector_id",
-            unique = true
-    )
-    private String detectorId;
     @Column(name = "enabled")
     private Boolean enabled = false;
     @Column(name = "locked")
@@ -45,4 +41,9 @@ public class UserProfile implements Serializable {
 
     @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private UserImage userImage;
+
+    @OneToOne(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "detector_data")
+    private DetectorData detectorData;
+
 }

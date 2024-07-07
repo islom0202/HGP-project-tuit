@@ -19,6 +19,7 @@ import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
 import registration.uz.hgpuserregistration.Registration.Entity.VerificationToken;
 import registration.uz.hgpuserregistration.Registration.Model.LoginRequest;
 import registration.uz.hgpuserregistration.Registration.Model.UserProfileRequest;
+import registration.uz.hgpuserregistration.Registration.Respository.UserProfileRepository;
 import registration.uz.hgpuserregistration.Registration.Respository.VerificationTokenRepo;
 import registration.uz.hgpuserregistration.Registration.Service.UserProfileService;
 
@@ -38,6 +39,8 @@ public class RegistrationController {
     private VerificationTokenRepo verificationTokenRepo;
     private final UserProfileService userProfileService;
     private final JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private UserProfileRepository userProfileRepository;
 
     public RegistrationController(UserProfileService userProfileService, JwtTokenProvider jwtTokenProvider) {
         this.userProfileService = userProfileService;
@@ -47,24 +50,20 @@ public class RegistrationController {
     @Transactional
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserProfileRequest request) {
-        try {
-            if (!userProfileService.existsUser(request)) {
+        if (!userProfileService.existsUser(request)) {
 
-                UserProfile userProfile = userProfileService.save(request);
-                String token = UUID.randomUUID().toString();
-                VerificationToken verificationToken = new VerificationToken();
-                verificationToken.setToken(token);
-                verificationToken.setGeneratedDate(new Date());
-                verificationToken.setExpiryDate(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000));
-                verificationToken.setUser(userProfile);
-                verificationTokenRepo.save(verificationToken);
-                String verificationUrl = "http://localhost:8080/api/verify?token=" + token;
-                emailService.sendEmail(request.getEmail(), "Email Verification", "Email Verification\n" + "Please verify your email using the following link: " + verificationUrl);
+            UserProfile userProfile = userProfileService.save(request);
+            String token = UUID.randomUUID().toString();
+            VerificationToken verificationToken = new VerificationToken();
+            verificationToken.setToken(token);
+            verificationToken.setGeneratedDate(new Date());
+            verificationToken.setExpiryDate(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000));
+            verificationToken.setUser(userProfile);
+            verificationTokenRepo.save(verificationToken);
+            String verificationUrl = "https://315b-195-158-2-216.ngrok-free.app/api/verify?token=" + token;
+            emailService.sendEmail(request.getEmail(), "Email Verification", "Email Verification\n" + "Please verify your email using the following link: " + verificationUrl);
 
-                return ResponseEntity.ok("Registration successful. Please check your email for verification instructions.");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+            return ResponseEntity.ok(userProfile.getId() + " User Registered successful. Please check your email for verification instructions.");
         }
         return ResponseEntity.status(HttpStatus.ALREADY_REPORTED)
                 .body("already registered!");
@@ -122,5 +121,11 @@ public class RegistrationController {
     public UserProfileRequest getProfile() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userProfileService.getUserProfile(userDetails.getUsername());
+    }
+
+    @DeleteMapping("/delete/user")
+    public ResponseEntity<?> deleteUser(@RequestParam("id") Long id) {
+        userProfileService.delete(id);
+        return ResponseEntity.ok(id + " User deleted successfully.");
     }
 }
