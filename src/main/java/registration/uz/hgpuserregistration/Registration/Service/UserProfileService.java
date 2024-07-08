@@ -5,12 +5,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import registration.uz.hgpuserregistration.Exception.UserProfileNotFoundException;
 import registration.uz.hgpuserregistration.Order.OrderRepository;
 import registration.uz.hgpuserregistration.Registration.Entity.Gender;
 import registration.uz.hgpuserregistration.Registration.Entity.UserImage;
 import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
 import registration.uz.hgpuserregistration.Registration.Entity.UserRole;
+import registration.uz.hgpuserregistration.Registration.Model.EditUserDetailsDTO;
 import registration.uz.hgpuserregistration.Registration.Model.UserProfileRequest;
 import registration.uz.hgpuserregistration.Registration.Respository.UserImageRepo;
 import registration.uz.hgpuserregistration.Registration.Respository.UserProfileRepository;
@@ -41,6 +44,7 @@ public class UserProfileService {
         userProfile.setLastname(request.getLastname());
         userProfile.setLocked(false);
         userProfile.setEnabled(false);
+        userProfile.setAccessStatus(false);
         userProfile.setAddress(request.getAddress());
         userProfile.setPassword(passwordEncoder.encode(request.getPassword()));
         userProfile.setPassportSerialNumber(request.getPassportSerialNumber());
@@ -111,8 +115,30 @@ public class UserProfileService {
     }
 
 
-
     private void deleteUser(Long id) {
         userProfileRepository.deleteById(id);
+    }
+
+    @Transactional
+    public UserProfile editUserDetails(Long id, EditUserDetailsDTO request) throws UserProfileNotFoundException {
+        UserProfile userProfile = userProfileRepository.findById(id).orElseThrow(() -> new UserProfileNotFoundException("User not found!"));
+
+        if (StringUtils.hasText(request.getEmail())) {
+            userProfile.setEmail(request.getEmail());
+        }
+        if (StringUtils.hasText(request.getPhone())) {
+            userProfile.setPhone(request.getPhone());
+        }
+        if (StringUtils.hasText(request.getPassword())) {
+            userProfile.setPassword(request.getPassword());
+        }
+        if (StringUtils.hasText(request.getAddress())) {
+            userProfile.setAddress(request.getAddress());
+        }
+        return userProfileRepository.save(userProfile);
+    }
+
+    public Boolean getAccessStatus(String login) {
+        return userProfileRepository.getAccessStatus(login);
     }
 }

@@ -12,10 +12,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import registration.uz.hgpuserregistration.Email.EmailService;
+import registration.uz.hgpuserregistration.Exception.UserProfileNotFoundException;
 import registration.uz.hgpuserregistration.JWT.TokenProvider.JwtToken;
 import registration.uz.hgpuserregistration.JWT.TokenProvider.JwtTokenProvider;
 import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
 import registration.uz.hgpuserregistration.Registration.Entity.VerificationToken;
+import registration.uz.hgpuserregistration.Registration.Model.EditUserDetailsDTO;
 import registration.uz.hgpuserregistration.Registration.Model.LoginRequest;
 import registration.uz.hgpuserregistration.Registration.Model.UserProfileRequest;
 import registration.uz.hgpuserregistration.Registration.Respository.VerificationTokenRepo;
@@ -89,9 +91,10 @@ public class RegistrationController {
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             String token = jwtTokenProvider.createToken(authentication);
 
+            Boolean accessStatus = userProfileService.getAccessStatus(request.getLogin());
             return ResponseEntity.ok()
                     .header("Authorization", "Bearer " + token)
-                    .body(new JwtToken(token));
+                    .body(new JwtToken(token, accessStatus));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid login or password.");
         }
@@ -125,5 +128,11 @@ public class RegistrationController {
     public ResponseEntity<?> deleteUser(@RequestParam("id") Long id) {
         userProfileService.delete(id);
         return ResponseEntity.ok(id + " User deleted successfully.");
+    }
+
+    @PutMapping("/edit/{id}")
+    public UserProfile editUser(@PathVariable("id") Long id,
+                                           @RequestBody EditUserDetailsDTO request) throws UserProfileNotFoundException {
+        return userProfileService.editUserDetails(id, request);
     }
 }

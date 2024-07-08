@@ -1,13 +1,11 @@
 package registration.uz.hgpuserregistration.JWT.TokenProvider;
 
 import io.jsonwebtoken.*;
-import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
@@ -23,39 +21,16 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-//    private static final long JWT_EXPIRATION_TIME = 86400000;
-//    private final Key key;
-//    private final JwtParser jwtParser;
-//
-//    public JwtTokenProvider() {
-//        byte[] keyBytes;
-//        String secret = "Ckl0IHNlZW1zIHlvdSdyZSB0cnlpbmcgdG8gaW1wbGVtZW50IGEgbG9naW4gbWV0aG9kIGluIGEgU3ByaW5nIEJvb3QgYXBwbGljYXRpb24uIFRoZSBlcnJvciBtaWdodCBiZSBiZWNhdXNlIHlvdSBoYXZlbid0IGhhbmRsZWQgdGhlIGNhc2Ugd2hlbiBhdXRoZW50aWNhdGlvbiBmYWlscy4=";
-//        keyBytes = Base64.getDecoder().decode(secret);
-//        key = Keys.hmacShaKeyFor(keyBytes);
-//        jwtParser = Jwts.parserBuilder().setSigningKey(key).build();
-//    }
-//
-//    public String createToken(Authentication authentication) {
-//        String authorities = authentication.getAuthorities().stream()
-//                .map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
-//
-//        long now = System.currentTimeMillis();
-//        Date jwtExpiration = new Date(now + JWT_EXPIRATION_TIME);
-//
-//        return Jwts.builder()
-//                .setSubject(authentication.getName())
-//                .claim("auth", authorities)
-//                .signWith(key, SignatureAlgorithm.ES512)
-//                .setExpiration(jwtExpiration)
-//                .compact();
-//    }
 private final JwtParser jwtParser;
+
+private final UserDetailsService userDetailsService;
 
     private final long milliseconds;
 
     private final Key key;
 
-    public JwtTokenProvider(UserDetailsService userDetailsService) {
+    public JwtTokenProvider(UserDetailsService userDetailsService, UserDetailsService userDetailsService1) {
+        this.userDetailsService = userDetailsService1;
         byte[] keyBytes;
         String secret = "Ckl0IHNlZW1zIHlvdSdyZSB0cnlpbmcgdG8gaW1wbGVtZW50IGEgbG9naW4gbWV0aG9kIGluIGEgU3ByaW5nIEJvb3QgYXBwbGljYXRpb24uIFRoZSBlcnJvciBtaWdodCBiZSBiZWNhdXNlIHlvdSBoYXZlbid0IGhhbmRsZWQgdGhlIGNhc2Ugd2hlbiBhdXRoZW50aWNhdGlvbiBmYWlscy4";
         keyBytes = Base64.getDecoder().decode(secret);
@@ -88,15 +63,16 @@ private final JwtParser jwtParser;
 
     public boolean validateToken(String token) {
         try {
-            jwtParser.parseClaimsJwt(token);
-        }catch (ExpiredJwtException e){
-            log.error("Expired JWT");
-        }catch (UnsupportedJwtException e){
-            log.error("Unsupported JWT");
-        }catch (MalformedJwtException e){
-            log.error("Malformed JWT");
-        }catch (IllegalArgumentException e){
-            log.error("Illegal JWT");
+            jwtParser.parseClaimsJws(token);
+            return true; // Token is valid
+        } catch (ExpiredJwtException e) {
+            log.error("Expired JWT: {}", e.getMessage());
+        } catch (UnsupportedJwtException e) {
+            log.error("Unsupported JWT: {}", e.getMessage());
+        } catch (MalformedJwtException e) {
+            log.error("Malformed JWT: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("Illegal JWT: {}", e.getMessage());
         }
         return false;
     }
@@ -108,7 +84,7 @@ private final JwtParser jwtParser;
                 .filter(auth -> auth.trim().isEmpty())
                 .map(SimpleGrantedAuthority::new)
                 .toList();
-        User principal = new User(claims.getSubject(), "", authorities);
-        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(claims.getSubject());
+        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 }

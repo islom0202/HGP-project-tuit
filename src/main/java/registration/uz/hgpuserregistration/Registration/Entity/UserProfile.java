@@ -46,4 +46,7 @@ public class UserProfile implements Serializable {
     @JoinColumn(name = "detector_data")
     private DetectorData detectorData;
 
+    @JoinColumn(name = "accessStatus")
+    private Boolean accessStatus;
+
 }

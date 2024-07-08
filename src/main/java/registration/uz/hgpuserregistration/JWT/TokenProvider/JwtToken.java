@@ -7,7 +7,9 @@ import lombok.Setter;
 @Getter
 public class JwtToken {
     private String token;
-    public JwtToken(String token) {
+    private Boolean accessStatus;
+    public JwtToken(String token, Boolean accessStatus) {
         this.token = token;
+        this.accessStatus = accessStatus;
     }
 }
