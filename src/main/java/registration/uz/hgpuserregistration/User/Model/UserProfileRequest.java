@@ -1,19 +1,17 @@
-package registration.uz.hgpuserregistration.Registration.Model;
+package registration.uz.hgpuserregistration.User.Model;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import registration.uz.hgpuserregistration.Registration.Entity.Gender;
+import registration.uz.hgpuserregistration.User.Entity.Gender;
 
 @Data
 @Getter
 @Setter
-@Builder
 public class UserProfileRequest {
     @NotEmpty
     private String firstname;
@@ -35,12 +33,17 @@ public class UserProfileRequest {
     private String phone;
     @Enumerated(EnumType.STRING)
     private Gender gender;
+    private String imageUrl;
 
-    public UserProfileRequest() {
-
-    }
-
-    public UserProfileRequest(String firstname, String lastname, String email, String address, String password, String passportSerialNumber, String phone, Gender gender) {
+    public UserProfileRequest(String firstname,
+                              String lastname,
+                              String email,
+                              String address,
+                              String password,
+                              String passportSerialNumber,
+                              String phone,
+                              Gender gender,
+                              String imageUrl) {
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
@@ -49,5 +52,6 @@ public class UserProfileRequest {
         this.passportSerialNumber = passportSerialNumber;
         this.phone = phone;
         this.gender = gender;
+        this.imageUrl = imageUrl;
     }
 }

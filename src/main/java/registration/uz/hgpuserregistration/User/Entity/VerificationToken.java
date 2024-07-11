@@ -1,4 +1,4 @@
-package registration.uz.hgpuserregistration.Registration.Entity;
+package registration.uz.hgpuserregistration.User.Entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;

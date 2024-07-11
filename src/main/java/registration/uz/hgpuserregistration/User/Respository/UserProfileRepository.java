@@ -1,10 +1,8 @@
-package registration.uz.hgpuserregistration.Registration.Respository;
+package registration.uz.hgpuserregistration.User.Respository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
+import registration.uz.hgpuserregistration.User.Entity.UserProfile;
 
 import java.util.Optional;
 
@@ -16,7 +14,4 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
     UserProfile findByPassportSerialNumber(String passportSerialNumber);
 
     Optional<UserProfile> findByDetectorData_DetectorId(String detectorId);
-
-    @Query(value = "select a.accessStatus from UserProfile a where a.login=:login", nativeQuery = true)
-    Boolean getAccessStatus(@Param("login") String login);
 }

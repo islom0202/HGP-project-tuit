@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import registration.uz.hgpuserregistration.Email.EmailService;
 import registration.uz.hgpuserregistration.Exception.UserProfileNotFoundException;
-import registration.uz.hgpuserregistration.Registration.Service.UserProfileService;
+import registration.uz.hgpuserregistration.User.Service.UserProfileService;
 
 import java.util.List;
 

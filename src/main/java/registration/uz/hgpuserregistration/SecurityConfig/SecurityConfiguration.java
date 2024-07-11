@@ -38,8 +38,10 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/order").permitAll()
                         .requestMatchers("/api/login").permitAll()
                         .requestMatchers("/api/verify").permitAll()
+                        .requestMatchers("/api/reset-pass/**").permitAll()
                         //delete has to be for admin only
                         .requestMatchers("/api/delete/**").permitAll()
+                        .requestMatchers("/api/profile","/api/uploadImage","/api/user/image/**").hasRole("USER")
                         .requestMatchers("/api/contact/send/message").hasRole("USER")
                         .requestMatchers("/api/emergency/add"
                         ,"/api/list").hasRole("ADMIN")

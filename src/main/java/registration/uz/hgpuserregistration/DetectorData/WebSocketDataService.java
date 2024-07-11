@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
-import registration.uz.hgpuserregistration.Registration.Respository.UserProfileRepository;
+import registration.uz.hgpuserregistration.User.Entity.UserProfile;
+import registration.uz.hgpuserregistration.User.Respository.UserProfileRepository;
 
 import java.util.Optional;
 

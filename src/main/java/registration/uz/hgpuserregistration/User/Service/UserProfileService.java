@@ -1,25 +1,27 @@
-package registration.uz.hgpuserregistration.Registration.Service;
+package registration.uz.hgpuserregistration.User.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.webjars.NotFoundException;
 import registration.uz.hgpuserregistration.Exception.UserProfileNotFoundException;
 import registration.uz.hgpuserregistration.Order.OrderRepository;
-import registration.uz.hgpuserregistration.Registration.Entity.Gender;
-import registration.uz.hgpuserregistration.Registration.Entity.UserImage;
-import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
-import registration.uz.hgpuserregistration.Registration.Entity.UserRole;
-import registration.uz.hgpuserregistration.Registration.Model.EditUserDetailsDTO;
-import registration.uz.hgpuserregistration.Registration.Model.UserProfileRequest;
-import registration.uz.hgpuserregistration.Registration.Respository.UserImageRepo;
-import registration.uz.hgpuserregistration.Registration.Respository.UserProfileRepository;
-import registration.uz.hgpuserregistration.Registration.Respository.VerificationTokenRepo;
+import registration.uz.hgpuserregistration.User.Entity.Gender;
+import registration.uz.hgpuserregistration.User.Entity.UserProfile;
+import registration.uz.hgpuserregistration.User.Entity.UserRole;
+import registration.uz.hgpuserregistration.User.Model.EditUserDetailsDTO;
+import registration.uz.hgpuserregistration.User.Model.ResetPass;
+import registration.uz.hgpuserregistration.User.Model.UserProfileRequest;
+import registration.uz.hgpuserregistration.User.Respository.UserProfileRepository;
+import registration.uz.hgpuserregistration.User.Respository.VerificationTokenRepo;
 
 import java.io.IOException;
+import java.rmi.AlreadyBoundException;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,10 +30,8 @@ import java.util.regex.Pattern;
 public class UserProfileService {
     private final UserProfileRepository userProfileRepository;
     private final PasswordEncoder passwordEncoder;
-    private final UserImageRepo userImageRepo;
     private final OrderRepository orderRepository;
     private final VerificationTokenRepo verificationTokenRepo;
-    private final UserImageRepo imageRepository;
 
     public boolean existsUser(UserProfileRequest request) {
         return userProfileRepository.existsByPhone(request.getPhone());
@@ -79,6 +79,9 @@ public class UserProfileService {
 
     public UserProfileRequest getUserProfile(String username) {
         UserProfile user = userProfileRepository.findByLogin(username);
+        String imageUrl = ServletUriComponentsBuilder.fromHttpUrl("http://localhost:8081/api/user/image/")
+                .path(user.getId().toString())
+                .toUriString();
         return new UserProfileRequest(user.getFirstname(),
                 user.getLastname(),
                 user.getEmail(),
@@ -86,20 +89,12 @@ public class UserProfileService {
                 user.getPassword(),
                 user.getPassportSerialNumber(),
                 user.getPhone(),
-                user.getGender());
+                user.getGender(),
+                imageUrl);
     }
 
     public void updatedUser(UserProfile user) {
         userProfileRepository.save(user);
-    }
-
-    public void setImage(UserDetails userDetails, MultipartFile file) throws IOException {
-        UserProfile userProfile = userProfileRepository.findByLogin(userDetails.getUsername());
-        UserImage userImage = new UserImage();
-        userImage.setImage(file.getBytes());
-        userImage.setUserProfile(userProfile);
-        userProfile.setUserImage(userImage);
-        userImageRepo.save(userImage);
     }
 
     public UserProfile getByPassportSerialNumber(String passportSerialNumber) {
@@ -110,7 +105,6 @@ public class UserProfileService {
     public void delete(Long id) {
         orderRepository.deleteByUserProfile_Id(id);
         verificationTokenRepo.deleteByUser_Id(id);
-        imageRepository.deleteByUserProfile_Id(id);
         deleteUser(id);
     }
 
@@ -119,7 +113,6 @@ public class UserProfileService {
         userProfileRepository.deleteById(id);
     }
 
-    @Transactional
     public UserProfile editUserDetails(Long id, EditUserDetailsDTO request) throws UserProfileNotFoundException {
         UserProfile userProfile = userProfileRepository.findById(id).orElseThrow(() -> new UserProfileNotFoundException("User not found!"));
 
@@ -138,7 +131,33 @@ public class UserProfileService {
         return userProfileRepository.save(userProfile);
     }
 
-    public Boolean getAccessStatus(String login) {
-        return userProfileRepository.getAccessStatus(login);
+    public UserProfile findByLogin(String login) {
+        return userProfileRepository.findByLogin(login);
+    }
+
+    public Optional<UserProfile> findById(Long id) {
+        return userProfileRepository.findById(id);
+    }
+
+    public void uploadImage(Long userId, MultipartFile file) throws AlreadyBoundException, IOException {
+        Optional<UserProfile> userProfile = userProfileRepository.findById(userId);
+
+        if (userProfile.isPresent() && userProfile.get().getImage() == null) {
+            UserProfile profile = userProfile.get();
+            profile.setImage(file.getBytes());
+            userProfileRepository.save(profile);
+        } else
+            throw new AlreadyBoundException("image is already in use");
+    }
+
+    public void resetPass(Long userId, ResetPass newPass) {
+        Optional<UserProfile> userProfile = Optional.ofNullable(
+                userProfileRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found!"))
+        );
+        if (userProfile.isPresent()){
+            UserProfile profile = userProfile.get();
+            profile.setPassword(passwordEncoder.encode(newPass.getNewPass()));
+            userProfileRepository.save(profile);
+        }
     }
 }

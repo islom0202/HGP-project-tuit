@@ -3,7 +3,7 @@ package registration.uz.hgpuserregistration.DetectorData;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
+import registration.uz.hgpuserregistration.User.Entity.UserProfile;
 
 import java.io.Serializable;
 

@@ -1,4 +1,4 @@
-package registration.uz.hgpuserregistration.Registration.Model;
+package registration.uz.hgpuserregistration.User.Model;
 
 import lombok.Builder;
 import lombok.Data;

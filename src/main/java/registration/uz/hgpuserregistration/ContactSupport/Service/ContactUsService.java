@@ -22,13 +22,11 @@ public class ContactUsService {
         ContactUs contactUs = new ContactUs();
         contactUs.setMessage(message.getMessage());
         contactUs.setEmail(message.getEmail());
-        contactUs.setFirstname(message.getFirstname());
-        contactUs.setLastname(message.getLastname());
-        contactUs.setPhoneNumber(message.getPhoneNumber());
+        contactUs.setTitle(message.getTitle());
         contactUs.setSentAt(new Date());
         contactUsRepository.save(contactUs);
         try {
-            emailService.sendToAdmin(message.getEmail(), message.getFirstname() + " " +message.getLastname(), message.getMessage());
+            emailService.sendToAdmin(message.getEmail(), message.getTitle(), message.getMessage());
             emailService.sendToUser(message.getEmail());
         } catch (Exception e) {
              throw new RuntimeException("Error sending email", e);

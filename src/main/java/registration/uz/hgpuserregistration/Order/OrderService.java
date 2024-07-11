@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 import registration.uz.hgpuserregistration.DetectorData.DetectorData;
 import registration.uz.hgpuserregistration.DetectorData.DetectorRepository;
 import registration.uz.hgpuserregistration.Exception.UserProfileNotFoundException;
-import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
-import registration.uz.hgpuserregistration.Registration.Respository.UserProfileRepository;
+import registration.uz.hgpuserregistration.User.Entity.UserProfile;
+import registration.uz.hgpuserregistration.User.Respository.UserProfileRepository;
 
 import java.util.Date;
 import java.util.List;

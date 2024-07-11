@@ -1,8 +1,8 @@
-package registration.uz.hgpuserregistration.Registration.Respository;
+package registration.uz.hgpuserregistration.User.Respository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import registration.uz.hgpuserregistration.Registration.Entity.VerificationToken;
+import registration.uz.hgpuserregistration.User.Entity.VerificationToken;
 
 @Repository
 public interface VerificationTokenRepo extends JpaRepository<VerificationToken, Long> {

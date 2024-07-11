@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
-import registration.uz.hgpuserregistration.Registration.Entity.UserProfile;
-import registration.uz.hgpuserregistration.Registration.Respository.UserProfileRepository;
+import registration.uz.hgpuserregistration.User.Entity.UserProfile;
+import registration.uz.hgpuserregistration.User.Respository.UserProfileRepository;
 
 import java.util.Collection;
 import java.util.Collections;

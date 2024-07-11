@@ -1,4 +1,4 @@
-package registration.uz.hgpuserregistration.Registration.Model;
+package registration.uz.hgpuserregistration.User.Model;
 
 import jakarta.validation.constraints.Size;
 import lombok.Builder;

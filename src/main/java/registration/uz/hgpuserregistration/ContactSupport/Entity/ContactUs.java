@@ -15,10 +15,8 @@ public class ContactUs implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String firstname;
-    private String lastname;
-    private String phoneNumber;
-    private String message;
+    private String title;
     private String email;
+    private String message;
     private Date sentAt;
 }
