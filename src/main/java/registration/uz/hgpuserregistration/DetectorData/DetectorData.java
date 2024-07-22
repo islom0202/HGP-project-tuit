@@ -17,6 +17,7 @@ public class DetectorData implements Serializable {
     private double gasPressure;
     private int battery;
     private double temperature;
+    //havo namligi
     private double speed;
     private double price;
     @OneToOne(optional = false)

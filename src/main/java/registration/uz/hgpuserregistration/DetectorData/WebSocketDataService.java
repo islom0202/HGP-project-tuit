@@ -1,10 +1,11 @@
 package registration.uz.hgpuserregistration.DetectorData;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import registration.uz.hgpuserregistration.User.Entity.UserProfile;
 import registration.uz.hgpuserregistration.User.Respository.UserProfileRepository;
 
@@ -12,24 +13,22 @@ import java.util.Optional;
 
 @Service
 public class WebSocketDataService {
+
+    @Autowired
+    private UserProfileRepository userProfileRepository;
+
+    @Autowired
+    private DetectorRepository detectorDataRepository;
+
+    @Autowired
+    private EntityManager entityManager;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final DetectorRepository detectorRepository;
-
-    private final UserProfileRepository userProfileRepository;
-
-    private final EntityManager entityManager;
-
-    public WebSocketDataService(DetectorRepository detectorRepository, UserProfileRepository userProfileRepository, EntityManager entityManager) {
-        this.detectorRepository = detectorRepository;
-        this.userProfileRepository = userProfileRepository;
-        this.entityManager = entityManager;
-    }
-
     @Transactional
-    public void handleIncomingData(String payload) {
+    public void handleIncomingData(String message) {
         try {
-            JsonNode jsonNode = objectMapper.readTree(payload);
+            JsonNode jsonNode = objectMapper.readTree(message);
 
             String detectorId = jsonNode.get("detectorId").asText();
             double gasPressure = jsonNode.get("gasPressure").asDouble();
@@ -44,7 +43,7 @@ public class WebSocketDataService {
                 UserProfile userProfile = userProfileOptional.get();
 
                 // Check if DetectorData already exists
-                Optional<DetectorData> existingDetectorDataOptional = detectorRepository.findById(detectorId);
+                Optional<DetectorData> existingDetectorDataOptional = detectorDataRepository.findById(detectorId);
                 DetectorData detectorData;
                 if (existingDetectorDataOptional.isPresent()) {
                     detectorData = existingDetectorDataOptional.get();
@@ -60,13 +59,13 @@ public class WebSocketDataService {
                 detectorData.setTemperature(temperature);
                 detectorData.setSpeed(speed);
                 detectorData.setPrice(price);
-//                detectorData.setUserId(userProfile);
+                detectorData.setUserId(userProfile);
 
                 // Save the updated or new DetectorData
-                detectorRepository.save(detectorData);
+                detectorDataRepository.save(detectorData);
 
                 // Update UserProfile with the DetectorData reference if needed
-//                userProfile.setDetectorData(detectorData);
+                userProfile.setDetectorData(detectorData);
                 userProfileRepository.save(userProfile);
 
                 System.out.println("Detector data saved successfully");

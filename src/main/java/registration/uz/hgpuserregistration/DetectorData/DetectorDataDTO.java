@@ -10,6 +10,7 @@ import lombok.Setter;
 @Data
 @Builder
 public class DetectorDataDTO {
+    private String detectorId;
     private double gasPressure;
     private int battery;
     private double temperature;

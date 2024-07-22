@@ -1,0 +1,72 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <meta http-equiv="X-UA-Compatible" content="ie=edge">-->
+<!--    <title>WebSocket Example</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>WebSocket Example</h1>-->
+
+<!--<form id="dataForm">-->
+<!--    <label for="battery">Battery:</label>-->
+<!--    <input type="number" id="battery" name="battery"><br><br>-->
+
+<!--    <label for="gasPressure">Gas Pressure:</label>-->
+<!--    <input type="number" step="0.01" id="gasPressure" name="gasPressure"><br><br>-->
+
+<!--    <label for="temperature">Temperature:</label>-->
+<!--    <input type="number" step="0.01" id="temperature" name="temperature"><br><br>-->
+
+<!--    <label for="speed">Speed:</label>-->
+<!--    <input type="number" step="0.01" id="speed" name="speed"><br><br>-->
+
+<!--    <label for="price">Price:</label>-->
+<!--    <input type="number" step="0.01" id="price" name="price"><br><br>-->
+
+<!--    <button type="button" onclick="sendData()">Send Data</button>-->
+<!--</form>-->
+
+<!--<script src="/webjars/sockjs-client/1.0.2/sockjs.min.js"></script>-->
+<!--<script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>-->
+
+<!--<script>-->
+<!--    var stompClient = null;-->
+
+<!--    function connect() {-->
+<!--        var socket = new SockJS('/websocket-connect');-->
+<!--        stompClient = Stomp.over(socket);-->
+<!--        stompClient.connect({}, function (frame) {-->
+<!--            console.log("Connected: " + frame);-->
+
+<!--            // Subscribe to user-specific queue-->
+<!--            stompClient.subscribe('/queue/reply', function (message) {-->
+<!--                console.log("Received user-specific message: " + message.body);-->
+<!--            });-->
+<!--        });-->
+<!--    }-->
+
+<!--    function sendData() {-->
+<!--        var battery = document.getElementById("battery").value;-->
+<!--        var gasPressure = document.getElementById("gasPressure").value;-->
+<!--        var temperature = document.getElementById("temperature").value;-->
+<!--        var speed = document.getElementById("speed").value;-->
+<!--        var price = document.getElementById("price").value;-->
+
+<!--        var data = {-->
+<!--            battery: battery,-->
+<!--            gasPressure: gasPressure,-->
+<!--            temperature: temperature,-->
+<!--            speed: speed,-->
+<!--            price: price-->
+<!--        };-->
+
+<!--        stompClient.send("/app/detector-data", JSON.stringify(data));-->
+<!--    }-->
+
+<!--    // Establish WebSocket connection when the page loads-->
+<!--    window.onload = connect;-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->

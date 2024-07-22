@@ -11,6 +11,8 @@ build/
 .classpath
 .factorypath
 caches
+jdks
+.tmp
 .project
 .settings
 .springBeans
