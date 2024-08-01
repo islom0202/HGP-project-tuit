@@ -34,9 +34,10 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers(SWAGGER_URLS).permitAll()
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/index").permitAll()
                         .requestMatchers("/ws/**").permitAll()
-                        .requestMatchers("/websocket-connect/**").permitAll()
+                        .requestMatchers("/api/detector/send").permitAll()
+                        .requestMatchers("/websocket-connection/**").permitAll()
                         .requestMatchers("/favicon.ico").permitAll()
                         .requestMatchers("/api/register").permitAll()
                         .requestMatchers("/api/order").permitAll()

@@ -43,9 +43,9 @@ public class UserProfile implements Serializable {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private byte[] image;
-    @OneToOne(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JoinColumn(name = "detector_data")
-    private DetectorData detectorData;
+//    @OneToOne(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+//    @JoinColumn(name = "detector_data")
+//    private DetectorData detectorData;
 
     @JoinColumn(name = "accessStatus")
     private Boolean accessStatus;

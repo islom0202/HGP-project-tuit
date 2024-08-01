@@ -13,5 +13,4 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
 
     UserProfile findByPassportSerialNumber(String passportSerialNumber);
 
-    Optional<UserProfile> findByDetectorData_DetectorId(String detectorId);
 }

@@ -1,25 +1,27 @@
 package registration.uz.hgpuserregistration.DetectorData;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.socket.config.annotation.EnableWebSocket;
-import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
-import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
-
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+@CrossOrigin
 @Configuration
-@EnableWebSocket
-public class WebSocketConfig implements WebSocketConfigurer {
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    private final DetectorWebSocketHandler detectorWebSocketHandler;
-
-    @Autowired
-    public WebSocketConfig(DetectorWebSocketHandler detectorWebSocketHandler) {
-        this.detectorWebSocketHandler = detectorWebSocketHandler;
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic");
+        config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
-    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-        registry.addHandler(detectorWebSocketHandler, "/ws/detector")
-                .setAllowedOrigins("*"); // Adjust origins as needed
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/websocket-connection")
+                .setAllowedOrigins("https://93d2-195-158-2-216.ngrok-free.app")
+                .withSockJS();
     }
+
 }
