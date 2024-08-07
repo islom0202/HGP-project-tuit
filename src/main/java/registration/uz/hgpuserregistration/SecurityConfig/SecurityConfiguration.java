@@ -46,13 +46,17 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/reset-pass/**").permitAll()
                         //delete has to be for admin only
                         .requestMatchers("/api/delete/**").permitAll()
-                        .requestMatchers("/api/profile", "/api/uploadImage", "/api/user/image/**").hasRole("USER")
+                        .requestMatchers("/api/profile", "/api/uploadImage").hasRole("USER")
                         .requestMatchers("/api/contact/send/message").hasRole("USER")
-                        .requestMatchers("/api/emergency/add"
-                                , "/api/list").hasRole("ADMIN")
+                        .requestMatchers("/api/emergency/add", "/api/list").hasRole("ADMIN")
                         .requestMatchers("/api/experts/get", "/api/experts/image/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/api/experts/add/details").hasRole("ADMIN")
                         .requestMatchers("/api/contact/get/messages", "/api/list").hasRole("ADMIN")
+                        .requestMatchers("/api/user/image/**").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers("/api/admin/user-list",
+                                "/api/admin/user-statis",
+                                "/api/admin/searching",
+                                "/api/done").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
         JwtConfig jwtConfig = new JwtConfig(jwtTokenProvider);

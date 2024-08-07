@@ -15,7 +15,7 @@ public class UserOrder implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column(nullable = false)
     private Date orderDate;
     @OneToOne(optional = false)
     @JoinColumn(
@@ -24,4 +24,6 @@ public class UserOrder implements Serializable {
     private UserProfile userProfile;
     @Column(unique = true)
     private String orderAddress;
+    @JoinColumn
+    private boolean done;
 }

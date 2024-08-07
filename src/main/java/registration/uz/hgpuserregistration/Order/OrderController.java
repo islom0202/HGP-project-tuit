@@ -53,4 +53,15 @@ public class OrderController {
         return ResponseEntity.ok(orderService.findAll());
     }
 
+    @PostMapping("/done")
+    public ResponseEntity<Object> isDone(@RequestParam("userId") String userId) {
+        Long id = Long.parseLong(userId);
+        orderService.isDone(id);
+        return ResponseEntity.ok("done");
+    }
+
+    @GetMapping("/order-statis")
+    public ResponseEntity<OrderStatistic> getOrderStatistics() {
+        return ResponseEntity.ok(orderService.getOrderStatistics());
+    }
 }
