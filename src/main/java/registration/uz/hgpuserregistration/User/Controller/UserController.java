@@ -20,10 +20,7 @@ import registration.uz.hgpuserregistration.JWT.TokenProvider.JwtToken;
 import registration.uz.hgpuserregistration.JWT.TokenProvider.JwtTokenProvider;
 import registration.uz.hgpuserregistration.User.Entity.UserProfile;
 import registration.uz.hgpuserregistration.User.Entity.VerificationToken;
-import registration.uz.hgpuserregistration.User.Model.EditUserDetailsDTO;
-import registration.uz.hgpuserregistration.User.Model.LoginRequest;
-import registration.uz.hgpuserregistration.User.Model.ResetPass;
-import registration.uz.hgpuserregistration.User.Model.UserProfileRequest;
+import registration.uz.hgpuserregistration.User.Model.*;
 import registration.uz.hgpuserregistration.User.Respository.VerificationTokenRepo;
 import registration.uz.hgpuserregistration.User.Service.UserProfileService;
 
@@ -135,7 +132,7 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<UserProfileRequest> getProfile() {
+    public ResponseEntity<UserProfileResponse> getProfile() {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return ResponseEntity.ok(userProfileService.getUserProfile(userDetails.getUsername()));
     }

@@ -13,9 +13,7 @@ import registration.uz.hgpuserregistration.Order.OrderRepository;
 import registration.uz.hgpuserregistration.User.Entity.Gender;
 import registration.uz.hgpuserregistration.User.Entity.UserProfile;
 import registration.uz.hgpuserregistration.User.Entity.UserRole;
-import registration.uz.hgpuserregistration.User.Model.EditUserDetailsDTO;
-import registration.uz.hgpuserregistration.User.Model.ResetPass;
-import registration.uz.hgpuserregistration.User.Model.UserProfileRequest;
+import registration.uz.hgpuserregistration.User.Model.*;
 import registration.uz.hgpuserregistration.User.Respository.UserProfileRepository;
 import registration.uz.hgpuserregistration.User.Respository.VerificationTokenRepo;
 
@@ -77,20 +75,30 @@ public class UserProfileService {
         return matcher.matches();
     }
 
-    public UserProfileRequest getUserProfile(String username) {
+    public UserProfileResponse getUserProfile(String username) {
         UserProfile user = userProfileRepository.findByLogin(username);
-        String imageUrl = ServletUriComponentsBuilder.fromHttpUrl("http://localhost:8081/api/user/image/")
-                .path(user.getId().toString())
-                .toUriString();
-        return new UserProfileRequest(user.getFirstname(),
-                user.getLastname(),
-                user.getEmail(),
-                user.getAddress(),
-                user.getPassword(),
-                user.getPassportSerialNumber(),
-                user.getPhone(),
-                user.getGender(),
-                imageUrl);
+        if(user.getImage() != null) {
+            String imageUrl = ServletUriComponentsBuilder.fromHttpUrl("http://localhost:8081/api/user/image/")
+                    .path(user.getId().toString())
+                    .toUriString();
+            return new UserProfileResponse(user.getFirstname(),
+                    user.getLastname(),
+                    user.getEmail(),
+                    user.getAddress(),
+                    user.getPassportSerialNumber(),
+                    user.getPhone(),
+                    user.getGender(),
+                    imageUrl);
+        }
+        else
+            return new UserProfileResponse(user.getFirstname(),
+                    user.getLastname(),
+                    user.getEmail(),
+                    user.getAddress(),
+                    user.getPassportSerialNumber(),
+                    user.getPhone(),
+                    user.getGender(),
+                    null);
     }
 
     public void updatedUser(UserProfile user) {

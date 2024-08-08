@@ -60,8 +60,8 @@ public class OrderController {
         return ResponseEntity.ok("done");
     }
 
-    @GetMapping("/order-statis")
-    public ResponseEntity<OrderStatistic> getOrderStatistics() {
-        return ResponseEntity.ok(orderService.getOrderStatistics());
-    }
+//    @GetMapping("/order-statis")
+//    public ResponseEntity<OrderStatistic> getOrderStatistics() {
+//        return ResponseEntity.ok(orderService.getOrderStatistics());
+//    }
 }

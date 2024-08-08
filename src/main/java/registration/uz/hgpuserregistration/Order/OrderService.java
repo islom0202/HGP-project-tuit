@@ -67,8 +67,8 @@ public class OrderService {
         }
     }
 
-    public OrderStatistic getOrderStatistics() {
-        OrderStatistic orderStatistic = new OrderStatistic();
-        //todo: set order json including number of the device sold and when they were sold
-    }
+//    public OrderStatistic getOrderStatistics() {
+//        OrderStatistic orderStatistic = new OrderStatistic();
+//        //todo: set order json including number of the device sold and when they were sold
+//    }
 }
