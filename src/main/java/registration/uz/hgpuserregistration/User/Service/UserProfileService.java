@@ -77,11 +77,15 @@ public class UserProfileService {
 
     public UserProfileResponse getUserProfile(String username) {
         UserProfile user = userProfileRepository.findByLogin(username);
+        String userId = String.valueOf(user.getId());
         if(user.getImage() != null) {
-            String imageUrl = ServletUriComponentsBuilder.fromHttpUrl("http://localhost:8081/api/user/image/")
+            String imageUrl = ServletUriComponentsBuilder.fromHttpUrl("https://amused-bison-equipped.ngrok-free.app/api/user/image/")
                     .path(user.getId().toString())
                     .toUriString();
-            return new UserProfileResponse(user.getFirstname(),
+
+            return new UserProfileResponse(
+                    userId,
+                    user.getFirstname(),
                     user.getLastname(),
                     user.getEmail(),
                     user.getAddress(),
@@ -91,7 +95,9 @@ public class UserProfileService {
                     imageUrl);
         }
         else
-            return new UserProfileResponse(user.getFirstname(),
+            return new UserProfileResponse(
+                    userId,
+                    user.getFirstname(),
                     user.getLastname(),
                     user.getEmail(),
                     user.getAddress(),
@@ -121,22 +127,21 @@ public class UserProfileService {
         userProfileRepository.deleteById(id);
     }
 
-    public UserProfile editUserDetails(Long id, EditUserDetailsDTO request) throws UserProfileNotFoundException {
+    public UserProfileResponse editUserDetails(EditUserDetailsDTO request) throws UserProfileNotFoundException {
+        Long id = Long.parseLong(request.getId());
         UserProfile userProfile = userProfileRepository.findById(id).orElseThrow(() -> new UserProfileNotFoundException("User not found!"));
 
-        if (StringUtils.hasText(request.getEmail())) {
+        if (!request.getEmail().isEmpty()) {
             userProfile.setEmail(request.getEmail());
         }
-        if (StringUtils.hasText(request.getPhone())) {
+        if (!request.getPhone().isEmpty()) {
             userProfile.setPhone(request.getPhone());
         }
-        if (StringUtils.hasText(request.getPassword())) {
-            userProfile.setPassword(request.getPassword());
-        }
-        if (StringUtils.hasText(request.getAddress())) {
+        if (!request.getAddress().isEmpty()) {
             userProfile.setAddress(request.getAddress());
         }
-        return userProfileRepository.save(userProfile);
+        userProfileRepository.save(userProfile);
+        return getUserProfile(userProfile.getLogin());
     }
 
     public UserProfile findByLogin(String login) {
@@ -150,7 +155,7 @@ public class UserProfileService {
     public void uploadImage(Long userId, MultipartFile file) throws AlreadyBoundException, IOException {
         Optional<UserProfile> userProfile = userProfileRepository.findById(userId);
 
-        if (userProfile.isPresent() && userProfile.get().getImage() == null) {
+        if (userProfile.isPresent()) {
             UserProfile profile = userProfile.get();
             profile.setImage(file.getBytes());
             userProfileRepository.save(profile);
@@ -158,10 +163,8 @@ public class UserProfileService {
             throw new AlreadyBoundException("image is already in use");
     }
 
-    public void resetPass(Long userId, ResetPass newPass) {
-        Optional<UserProfile> userProfile = Optional.ofNullable(
-                userProfileRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found!"))
-        );
+    public void resetPass(ResetPass newPass) {
+        Optional<UserProfile> userProfile = userProfileRepository.findByEmail(newPass.getEmail());
         if (userProfile.isPresent()){
             UserProfile profile = userProfile.get();
             profile.setPassword(passwordEncoder.encode(newPass.getNewPass()));

@@ -1,10 +1,10 @@
 package registration.uz.hgpuserregistration.AdminPanel;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.web.bind.annotation.*;
+import registration.uz.hgpuserregistration.JWT.TokenProvider.JwtTokenProvider;
 import registration.uz.hgpuserregistration.User.Entity.Gender;
 import registration.uz.hgpuserregistration.User.Model.UserProfileResponseDto;
 import registration.uz.hgpuserregistration.User.Model.UserStatistics;
@@ -13,13 +13,12 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/admin")
+@AllArgsConstructor
 public class AdminPanelController {
 
     private final AdminPanelService adminPanelService;
-
-    public AdminPanelController(AdminPanelService adminPanelService) {
-        this.adminPanelService = adminPanelService;
-    }
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/user-list")
     public ResponseEntity<List<UserProfileResponseDto>> getUserList() {
@@ -27,7 +26,7 @@ public class AdminPanelController {
     }
 
     @GetMapping("/user-statis")
-    public ResponseEntity<UserStatistics> getUserStatistics(){
+    public ResponseEntity<UserStatistics> getUserStatistics() {
         return ResponseEntity.ok(adminPanelService.getUserStatistics());
     }
 
@@ -37,13 +36,18 @@ public class AdminPanelController {
             @RequestParam(required = false) String lastname,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) Gender gender,
-            @RequestParam(required = false) String enabled){
-            return ResponseEntity.ok(adminPanelService.findBySearching(
-                    firstname,
-                    lastname,
-                    email,
-                    gender,
-                    enabled
-            ));
+            @RequestParam(required = false) String enabled) {
+        return ResponseEntity.ok(adminPanelService.findBySearching(
+                firstname,
+                lastname,
+                email,
+                gender,
+                enabled
+        ));
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<?> addAdmin(@RequestBody AdminRequest request) {
+        return ResponseEntity.ok(adminPanelService.save(request));
     }
 }

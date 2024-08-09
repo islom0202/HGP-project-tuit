@@ -21,6 +21,7 @@ public class AdminPanelService {
     private final UserProfileRepository profileRepository;
     private final DetectorRepository detectorRepository;
     private final UserSearchingRepository searchingRepository;
+    private final AdminTableRepo adminTableRepo;
 
     public List<UserProfileResponseDto> getUserList() {
         List<UserProfile> userProfiles = profileRepository.findAll();
@@ -76,5 +77,13 @@ public class AdminPanelService {
             userProfileResponseDtos.add(userProfileResponseDto);
         }
         return userProfileResponseDtos;
+    }
+
+    public Object save(AdminRequest request) {
+        AdminTable adminTable = new AdminTable();
+        adminTable.setUsername(request.getUsername());
+        adminTable.setPassword(request.getPassword());
+        adminTable.setRole(request.getRole());
+        return adminTableRepo.save(adminTable);
     }
 }

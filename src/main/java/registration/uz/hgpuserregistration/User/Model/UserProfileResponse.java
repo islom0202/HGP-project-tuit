@@ -11,7 +11,7 @@ import registration.uz.hgpuserregistration.User.Entity.Gender;
 @Setter
 @Getter
 public class UserProfileResponse {
-
+    private String id;
     private String firstname;
     private String lastname;
 
@@ -26,7 +26,9 @@ public class UserProfileResponse {
     private Gender gender;
     private String imageUrl;
 
-    public UserProfileResponse(String firstname,
+    public UserProfileResponse(
+            String id,
+            String firstname,
                               String lastname,
                               String email,
                               String address,
@@ -34,6 +36,7 @@ public class UserProfileResponse {
                               String phone,
                               Gender gender,
                               String imageUrl) {
+        this.id = id;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;

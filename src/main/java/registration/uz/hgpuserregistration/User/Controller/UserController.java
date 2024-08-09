@@ -1,6 +1,7 @@
 package registration.uz.hgpuserregistration.User.Controller;
 
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,27 +33,14 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api")
+@AllArgsConstructor
 public class UserController {
 
     private final AuthenticationManager authenticationManager;
-
     private final EmailService emailService;
-
     private final VerificationTokenRepo verificationTokenRepo;
     private final UserProfileService userProfileService;
     private final JwtTokenProvider jwtTokenProvider;
-
-    public UserController(AuthenticationManager authenticationManager,
-                          EmailService emailService,
-                          VerificationTokenRepo verificationTokenRepo,
-                          UserProfileService userProfileService,
-                          JwtTokenProvider jwtTokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.emailService = emailService;
-        this.verificationTokenRepo = verificationTokenRepo;
-        this.userProfileService = userProfileService;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @Transactional
     @PostMapping("/register")
@@ -67,7 +55,7 @@ public class UserController {
             verificationToken.setExpiryDate(new Date(System.currentTimeMillis() + 24 * 60 * 60 * 1000));
             verificationToken.setUser(userProfile);
             verificationTokenRepo.save(verificationToken);
-            String verificationUrl = "https://315b-195-158-2-216.ngrok-free.app/api/verify?token=" + token;
+            String verificationUrl = " https://amused-bison-equipped.ngrok-free.app/api/verify?token=" + token;
             emailService.sendEmail(request.getEmail(), "Email Verification", "Email Verification\n" + "Please verify your email using the following link: " + verificationUrl);
 
             return ResponseEntity.ok(userProfile.getId() + " User Registered successful. Please check your email for verification instructions.");
@@ -77,11 +65,12 @@ public class UserController {
     }
 
     @PostMapping("/uploadImage")
-    public ResponseEntity<String> setImage(@RequestParam("userId") Long userId,
+    public ResponseEntity<String> setImage(@RequestParam("userId") String userId,
                                            @RequestParam("file") MultipartFile file) {
+        Long id = Long.parseLong(userId);
 
         try {
-            userProfileService.uploadImage(userId, file);
+            userProfileService.uploadImage(id, file);
             return ResponseEntity.status(HttpStatus.OK).body("image uploaded!");
         } catch (IOException e) {
             return ResponseEntity.status(500).body("Error saving image: " + e.getMessage());
@@ -138,14 +127,18 @@ public class UserController {
     }
 
     @GetMapping("/user/image/{id}")
-    public ResponseEntity<byte[]> getUserImage(@PathVariable Long id) {
-        Optional<UserProfile> userProfile = userProfileService.findById(id);
+    public ResponseEntity<byte[]> getUserImage(@PathVariable String id) {
+        Long userId = Long.parseLong(id);
+        Optional<UserProfile> userProfile = userProfileService.findById(userId);
         if (userProfile.isPresent() && userProfile.get().getImage() != null) {
             byte[] image = userProfile.get().getImage();
-            return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_JPEG)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"image.jpg\"")
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.valueOf("image/png"))
                     .body(image);
+//            return ResponseEntity.ok()
+//                    .contentType(MediaType.IMAGE_JPEG)
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"image.jpg\"")
+//                    .body(image);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -157,20 +150,18 @@ public class UserController {
         return ResponseEntity.ok(id + " User deleted successfully.");
     }
 
-    @PostMapping("/reset-pass/{userId}")
-    public ResponseEntity<Object> resetPass(@PathVariable("userId") Long userId,
-                                            @RequestBody ResetPass newPass) {
+    @PostMapping("/reset-pass")
+    public ResponseEntity<String> resetPass(@RequestBody ResetPass newPass) {
         try {
-            userProfileService.resetPass(userId, newPass);
-            return ResponseEntity.ok("Password reset successfully.");
+            userProfileService.resetPass(newPass);
+            return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body("Password reset successfully.");
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
-    @PutMapping("/edit/{id}")
-    public UserProfile editUser(@PathVariable("id") Long id,
-                                @RequestBody EditUserDetailsDTO request) throws UserProfileNotFoundException {
-        return userProfileService.editUserDetails(id, request);
+    @PostMapping("/edit")
+    public ResponseEntity<UserProfileResponse> editUser(@RequestBody EditUserDetailsDTO request) throws UserProfileNotFoundException {
+        return ResponseEntity.ok(userProfileService.editUserDetails(request));
     }
 }

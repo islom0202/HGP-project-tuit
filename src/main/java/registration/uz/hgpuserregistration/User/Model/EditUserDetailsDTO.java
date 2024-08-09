@@ -11,10 +11,9 @@ import lombok.Setter;
 @Data
 @Builder
 public class EditUserDetailsDTO {
+    private String id;
     private String email;
     private String address;
-    @Size(min = 6)
-    private String password;
     @Size(min = 12)
     private String phone;
 }

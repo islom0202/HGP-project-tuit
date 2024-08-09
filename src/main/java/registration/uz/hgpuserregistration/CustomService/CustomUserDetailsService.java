@@ -1,11 +1,14 @@
 package registration.uz.hgpuserregistration.CustomService;
 
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
+import registration.uz.hgpuserregistration.AdminPanel.AdminTable;
+import registration.uz.hgpuserregistration.AdminPanel.AdminTableRepo;
 import registration.uz.hgpuserregistration.User.Entity.UserProfile;
 import registration.uz.hgpuserregistration.User.Respository.UserProfileRepository;
 
@@ -13,12 +16,10 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Component
+@AllArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {
-    private final UserProfileRepository userProfileRepository;
 
-    public CustomUserDetailsService(UserProfileRepository userProfileRepository) {
-        this.userProfileRepository = userProfileRepository;
-    }
+    private final UserProfileRepository userProfileRepository;
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {

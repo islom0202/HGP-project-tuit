@@ -21,15 +21,15 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-private final JwtParser jwtParser;
+    private final JwtParser jwtParser;
 
-private final UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     private final long milliseconds;
 
     private final Key key;
 
-    public JwtTokenProvider(UserDetailsService userDetailsService, UserDetailsService userDetailsService1) {
+    public JwtTokenProvider(UserDetailsService userDetailsService1) {
         this.userDetailsService = userDetailsService1;
         byte[] keyBytes;
         String secret = "Ckl0IHNlZW1zIHlvdSdyZSB0cnlpbmcgdG8gaW1wbGVtZW50IGEgbG9naW4gbWV0aG9kIGluIGEgU3ByaW5nIEJvb3QgYXBwbGljYXRpb24uIFRoZSBlcnJvciBtaWdodCBiZSBiZWNhdXNlIHlvdSBoYXZlbid0IGhhbmRsZWQgdGhlIGNhc2Ugd2hlbiBhdXRoZW50aWNhdGlvbiBmYWlscy4";

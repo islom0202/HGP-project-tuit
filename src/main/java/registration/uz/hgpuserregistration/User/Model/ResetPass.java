@@ -11,4 +11,5 @@ public class ResetPass {
     @NotEmpty
     @Size(min = 6)
     private String newPass;
+    private String email;
 }

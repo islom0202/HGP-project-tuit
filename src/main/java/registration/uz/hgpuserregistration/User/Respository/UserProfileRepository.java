@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import registration.uz.hgpuserregistration.User.Entity.UserProfile;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserProfileRepository extends JpaRepository<UserProfile, Long> {
@@ -20,4 +21,6 @@ public interface UserProfileRepository extends JpaRepository<UserProfile, Long> 
 
     @Query("select count(*) from UserProfile a where a.enabled=true")
     int countEnabledUsers();
+
+    Optional<UserProfile> findByEmail(String email);
 }
