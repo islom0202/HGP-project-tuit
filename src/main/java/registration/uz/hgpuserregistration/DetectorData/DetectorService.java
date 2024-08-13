@@ -24,7 +24,7 @@ public class DetectorService {
         detectorData.setBattery(dto.getBattery());
         detectorData.setPrice(dto.getPrice());
         detectorData.setGasPressure(dto.getGasPressure());
-        detectorData.setSpeed(dto.getSpeed());
+        detectorData.setAirHumidity(dto.getAirHumidity());
         detectorData.setUserId(userProfile);
         detectorRepository.save(detectorData);
 

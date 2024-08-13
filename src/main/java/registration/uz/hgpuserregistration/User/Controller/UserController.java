@@ -36,11 +36,9 @@ import java.util.UUID;
 @AllArgsConstructor
 public class UserController {
 
-    private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
     private final VerificationTokenRepo verificationTokenRepo;
     private final UserProfileService userProfileService;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     @PostMapping("/register")
@@ -76,29 +74,6 @@ public class UserController {
             return ResponseEntity.status(500).body("Error saving image: " + e.getMessage());
         } catch (AlreadyBoundException e) {
             throw new RuntimeException(e);
-        }
-    }
-
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        if (request.getLogin() == null || request.getPassword() == null || request.getLogin().isEmpty() || request.getPassword().isEmpty()) {
-            return ResponseEntity.badRequest().body("Login and password are required.");
-        }
-
-        try {
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                    request.getLogin(),
-                    request.getPassword()
-            );
-            Authentication authentication = authenticationManager.authenticate(authenticationToken);
-            String token = jwtTokenProvider.createToken(authentication);
-
-            UserProfile userProfile = userProfileService.findByLogin(request.getLogin());
-            return ResponseEntity.ok()
-                    .header("Authorization", "Bearer " + token)
-                    .body(new JwtToken(token, userProfile.getAccessStatus()));
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid login or password.");
         }
     }
 

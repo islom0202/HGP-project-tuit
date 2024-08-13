@@ -20,50 +20,60 @@ import java.util.Collections;
 public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserProfileRepository userProfileRepository;
+    private final AdminTableRepo adminTableRepo;
 
     @Override
     public UserDetails loadUserByUsername(String login) throws UsernameNotFoundException {
         final UserProfile userProfile = userProfileRepository.findByLogin(login);
+        final AdminTable adminTable = adminTableRepo.findByUsername(login);
+        if (userProfile != null){
+            return new UsersDetails(userProfile);
+        }
+        if (adminTable != null){
+            return new AdminDetails(adminTable);
+        }
 
-        return new UserDetails() {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(
-                        userProfile.getRole().name()
-                );
-                return Collections.singleton(simpleGrantedAuthority);
-
-            }
-
-            @Override
-            public String getPassword() {
-                return userProfile.getPassword();
-            }
-
-            @Override
-            public String getUsername() {
-                return userProfile.getLogin();
-            }
-
-            @Override
-            public boolean isAccountNonExpired() {
-                return true;
-            }
-
-            @Override
-            public boolean isAccountNonLocked() {
-                return true;
-            }
-
-            @Override
-            public boolean isCredentialsNonExpired() {
-                return true;
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return userProfile.getEnabled();
-            }
-        };
+        throw new UsernameNotFoundException("User not found");
+//
+//        return new UserDetails() {
+//            @Override
+//            public Collection<? extends GrantedAuthority> getAuthorities() {
+//                SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(
+//                        userProfile.getRole().name()
+//                );
+//                return Collections.singleton(simpleGrantedAuthority);
+//
+//            }
+//
+//            @Override
+//            public String getPassword() {
+//                return userProfile.getPassword();
+//            }
+//
+//            @Override
+//            public String getUsername() {
+//                return userProfile.getLogin();
+//            }
+//
+//            @Override
+//            public boolean isAccountNonExpired() {
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean isAccountNonLocked() {
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean isCredentialsNonExpired() {
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean isEnabled() {
+//                return userProfile.getEnabled();
+//            }
+//        };
     }
 }

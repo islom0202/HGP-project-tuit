@@ -14,6 +14,6 @@ public class DetectorDataDTO {
     private double gasPressure;
     private int battery;
     private double temperature;
-    private double speed;
+    private double airHumidity;
     private double price;
 }

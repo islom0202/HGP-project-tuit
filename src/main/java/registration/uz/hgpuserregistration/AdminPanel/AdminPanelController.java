@@ -2,9 +2,7 @@ package registration.uz.hgpuserregistration.AdminPanel;
 
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
-import registration.uz.hgpuserregistration.JWT.TokenProvider.JwtTokenProvider;
 import registration.uz.hgpuserregistration.User.Entity.Gender;
 import registration.uz.hgpuserregistration.User.Model.UserProfileResponseDto;
 import registration.uz.hgpuserregistration.User.Model.UserStatistics;
@@ -17,8 +15,6 @@ import java.util.List;
 public class AdminPanelController {
 
     private final AdminPanelService adminPanelService;
-    private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
 
     @GetMapping("/user-list")
     public ResponseEntity<List<UserProfileResponseDto>> getUserList() {

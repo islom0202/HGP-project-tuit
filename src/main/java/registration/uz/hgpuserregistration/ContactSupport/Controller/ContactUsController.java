@@ -1,5 +1,6 @@
 package registration.uz.hgpuserregistration.ContactSupport.Controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import registration.uz.hgpuserregistration.ContactSupport.Entity.ContactUs;
@@ -10,13 +11,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/contact")
+@AllArgsConstructor
 public class ContactUsController {
 
     private final ContactUsService contactUsService;
-
-    public ContactUsController(ContactUsService contactUsService) {
-        this.contactUsService = contactUsService;
-    }
 
     @PostMapping("/send/message")
     public ResponseEntity<Object> sendMessage(@RequestBody MessageDto message) {

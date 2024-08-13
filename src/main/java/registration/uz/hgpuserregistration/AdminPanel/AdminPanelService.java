@@ -1,6 +1,7 @@
 package registration.uz.hgpuserregistration.AdminPanel;
 
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import registration.uz.hgpuserregistration.DetectorData.DetectorData;
@@ -22,6 +23,7 @@ public class AdminPanelService {
     private final DetectorRepository detectorRepository;
     private final UserSearchingRepository searchingRepository;
     private final AdminTableRepo adminTableRepo;
+    private final PasswordEncoder passwordEncoder;
 
     public List<UserProfileResponseDto> getUserList() {
         List<UserProfile> userProfiles = profileRepository.findAll();
@@ -60,7 +62,7 @@ public class AdminPanelService {
         List<UserProfileResponseDto> userProfileResponseDtos = new ArrayList<>();
         for (UserProfile userProfile : userProfiles) {
             UserProfileResponseDto userProfileResponseDto = new UserProfileResponseDto();
-            String imageUrl = ServletUriComponentsBuilder.fromHttpUrl("http://localhost:8087/api/user/image/")
+            String imageUrl = ServletUriComponentsBuilder.fromHttpUrl("https://amused-bison-equipped.ngrok-free.app/api/user/image/")
                     .path(userProfile.getId().toString())
                     .toUriString();
             DetectorData detectorData = detectorRepository.findByUserId(userProfile);
@@ -79,10 +81,10 @@ public class AdminPanelService {
         return userProfileResponseDtos;
     }
 
-    public Object save(AdminRequest request) {
+    public AdminTable save(AdminRequest request) {
         AdminTable adminTable = new AdminTable();
         adminTable.setUsername(request.getUsername());
-        adminTable.setPassword(request.getPassword());
+        adminTable.setPassword(passwordEncoder.encode(request.getPassword()));
         adminTable.setRole(request.getRole());
         return adminTableRepo.save(adminTable);
     }

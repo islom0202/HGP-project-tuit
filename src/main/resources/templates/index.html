@@ -1,25 +1,25 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>WebSocket Test</title>
-    <!-- Include SockJS and STOMP libraries before using them -->
-</head>
-<body>
-<h1>WebSocket Test</h1>
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>WebSocket Test</title>-->
+<!--    &lt;!&ndash; Include SockJS and STOMP libraries before using them &ndash;&gt;-->
+<!--</head>-->
+<!--<body>-->
+<!--<h1>WebSocket Test</h1>-->
 
-<script src="/webjars/sockjs-client/1.0.2/sockjs.min.js"></script>
-<script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-<script>
-    // Now that SockJS and STOMP are loaded, we can safely use them
-    var socket = new SockJS('http://localhost:8087/websocket-connection');
-    var stompClient = Stomp.over(socket);
-    stompClient.connect({}, function (frame) {
-        console.log("Connected!");
-        stompClient.subscribe("/topic/message", function (payload) {
-            console.log(payload);
-        })
-    });
-</script>
-</body>
-</html>
+<!--<script src="/webjars/sockjs-client/1.0.2/sockjs.min.js"></script>-->
+<!--<script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>-->
+<!--<script>-->
+<!--    // Now that SockJS and STOMP are loaded, we can safely use them-->
+<!--    var socket = new SockJS('https://amused-bison-equipped.ngrok-free.app/websocket-connection');-->
+<!--    var stompClient = Stomp.over(socket);-->
+<!--    stompClient.connect({}, function (frame) {-->
+<!--        console.log("Connected!");-->
+<!--        stompClient.subscribe("/topic/message", function (payload) {-->
+<!--            console.log(payload);-->
+<!--        })-->
+<!--    });-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->

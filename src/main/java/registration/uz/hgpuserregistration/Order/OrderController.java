@@ -1,7 +1,7 @@
 package registration.uz.hgpuserregistration.Order;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,17 +16,11 @@ import java.util.List;
         name = "bearerAuth"
 )
 @RequestMapping("/api")
+@AllArgsConstructor
 public class OrderController {
     private final OrderService orderService;
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
-    private UserProfileService userProfileService;
-
-    public OrderController(OrderService orderService) {
-        this.orderService = orderService;
-    }
+    private final EmailService emailService;
+    private final UserProfileService userProfileService;
 
     @PostMapping("/order")
     public ResponseEntity<String> order(@RequestBody OrderRequest request) {
@@ -40,7 +34,7 @@ public class OrderController {
             }
 
             String login = orderService.saveOrder(request);
-            String text = "Hi, Order has been successfully accepted! \n"+"Your Login is ready :" + login;
+            String text = "Hi, Order has been successfully accepted! \n" + "Your Login is ready :" + login;
             emailService.sendEmail(userProfileService.getByPassportSerialNumber(request.getPassportSerialNumber()).getEmail(), "Login request", text);
             return ResponseEntity.ok("your login has been sent to your email!");
         } catch (UserProfileNotFoundException e) {
