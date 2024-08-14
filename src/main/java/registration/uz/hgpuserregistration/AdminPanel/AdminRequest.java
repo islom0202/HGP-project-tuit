@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class AdminRequest {
-    private String username;
+    private String login;
     private String password;
-    private String role;
 }

@@ -62,11 +62,9 @@ public class AdminPanelService {
         List<UserProfileResponseDto> userProfileResponseDtos = new ArrayList<>();
         for (UserProfile userProfile : userProfiles) {
             UserProfileResponseDto userProfileResponseDto = new UserProfileResponseDto();
-            String imageUrl = ServletUriComponentsBuilder.fromHttpUrl("https://amused-bison-equipped.ngrok-free.app/api/user/image/")
-                    .path(userProfile.getId().toString())
-                    .toUriString();
             DetectorData detectorData = detectorRepository.findByUserId(userProfile);
             String detectorId = detectorData.getDetectorId();
+            userProfileResponseDto.setId(userProfile.getId());
             userProfileResponseDto.setFirstname(userProfile.getFirstname());
             userProfileResponseDto.setLastname(userProfile.getLastname());
             userProfileResponseDto.setEmail(userProfile.getEmail());
@@ -75,7 +73,6 @@ public class AdminPanelService {
             userProfileResponseDto.setGender(userProfile.getGender());
             userProfileResponseDto.setEnabled(userProfile.getEnabled());
             userProfileResponseDto.setDeviceId(detectorId);
-            userProfileResponseDto.setImageUrl(imageUrl);
             userProfileResponseDtos.add(userProfileResponseDto);
         }
         return userProfileResponseDtos;
@@ -83,9 +80,9 @@ public class AdminPanelService {
 
     public AdminTable save(AdminRequest request) {
         AdminTable adminTable = new AdminTable();
-        adminTable.setUsername(request.getUsername());
+        adminTable.setUsername(request.getLogin());
         adminTable.setPassword(passwordEncoder.encode(request.getPassword()));
-        adminTable.setRole(request.getRole());
+        adminTable.setRole("ROLE_ADMIN");
         return adminTableRepo.save(adminTable);
     }
 }

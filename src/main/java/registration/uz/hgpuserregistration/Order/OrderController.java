@@ -43,19 +43,18 @@ public class OrderController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<List<UserOrder>> getAllOrders() {
+    public ResponseEntity<List<UserOrderResponseDto>> getAllOrders() {
         return ResponseEntity.ok(orderService.findAll());
     }
 
     @PostMapping("/done")
-    public ResponseEntity<Object> isDone(@RequestParam("userId") String userId) {
-        Long id = Long.parseLong(userId);
-        orderService.isDone(id);
+    public ResponseEntity<Object> isDone(@RequestParam("userId") Long userId) {
+        orderService.isDone(userId);
         return ResponseEntity.ok("done");
     }
 
-//    @GetMapping("/order-statis")
-//    public ResponseEntity<OrderStatistic> getOrderStatistics() {
-//        return ResponseEntity.ok(orderService.getOrderStatistics());
-//    }
+    @GetMapping("/order-statis")
+    public ResponseEntity<List<OrderStatistic>> getOrderStatistics() {
+        return ResponseEntity.ok(orderService.getOrderStatistics());
+    }
 }

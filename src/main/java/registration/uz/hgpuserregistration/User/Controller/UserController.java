@@ -129,7 +129,10 @@ public class UserController {
     public ResponseEntity<String> resetPass(@RequestBody ResetPass newPass) {
         try {
             userProfileService.resetPass(newPass);
-            return ResponseEntity.status(200).contentType(MediaType.APPLICATION_JSON).body("Password reset successfully.");
+            return ResponseEntity.
+                    status(200).
+                    contentType(MediaType.APPLICATION_JSON).
+                    body("Password reset successfully.");
         } catch (NotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }

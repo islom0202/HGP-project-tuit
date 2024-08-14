@@ -8,6 +8,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.webjars.NotFoundException;
+import registration.uz.hgpuserregistration.AdminPanel.EnableDisableUser;
 import registration.uz.hgpuserregistration.Exception.UserProfileNotFoundException;
 import registration.uz.hgpuserregistration.Order.OrderRepository;
 import registration.uz.hgpuserregistration.User.Entity.Gender;
@@ -168,6 +169,15 @@ public class UserProfileService {
         if (userProfile.isPresent()){
             UserProfile profile = userProfile.get();
             profile.setPassword(passwordEncoder.encode(newPass.getNewPass()));
+            userProfileRepository.save(profile);
+        }
+    }
+
+    public void enableOrDisable(EnableDisableUser request) {
+        Optional<UserProfile> userProfile = userProfileRepository.findById(request.getUserId());
+        if (userProfile.isPresent()) {
+            UserProfile profile = userProfile.get();
+            profile.setEnabled(request.isEnabled());
             userProfileRepository.save(profile);
         }
     }

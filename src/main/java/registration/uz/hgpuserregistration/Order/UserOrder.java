@@ -24,6 +24,6 @@ public class UserOrder implements Serializable {
     private UserProfile userProfile;
     @Column(unique = true)
     private String orderAddress;
-    @JoinColumn
+    @Column
     private boolean done;
 }

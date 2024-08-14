@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import registration.uz.hgpuserregistration.AdminPanel.AdminTable;
+import registration.uz.hgpuserregistration.AdminPanel.AdminTableRepo;
 import registration.uz.hgpuserregistration.AdminPanel.AdminToken;
 import registration.uz.hgpuserregistration.JWT.TokenProvider.JwtToken;
 import registration.uz.hgpuserregistration.JWT.TokenProvider.JwtTokenProvider;
@@ -26,6 +28,7 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final UserProfileService userProfileService;
+    private final AdminTableRepo adminTableRepo;
 
     @PostMapping
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
@@ -46,12 +49,21 @@ public class AuthController {
                 return ResponseEntity.ok()
                         .header("Authorization", "Bearer " + token)
                         .body(new JwtToken(token, userProfile.getAccessStatus()));
-            } else
-                return ResponseEntity.ok()
-                        .header("Authorization", "Bearer " + token)
-                        .body(new AdminToken(token));
+            } else {
+                AdminTable adminTable = adminTableRepo.findByUsername(request.getLogin());
+                if (adminTable != null) {
+                    return ResponseEntity.ok()
+                            .header("Authorization", "Bearer " + token)
+                            .body(new AdminToken(token, adminTable.getRole()));
+                } else {
+                    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not found.");
+                }
+            }
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Invalid login or password.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid login or password.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An unexpected error occurred.");
         }
     }
+
 }

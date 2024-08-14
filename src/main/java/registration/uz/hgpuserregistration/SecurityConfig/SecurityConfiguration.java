@@ -42,20 +42,22 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/register").permitAll()
                         .requestMatchers("/api/order").permitAll()
                         .requestMatchers("/api/login").permitAll()
-                        .requestMatchers("/api/verify").permitAll()
+                        .requestMatchers("/api/verify","/api/contact/get/messages","/api/order-statis").permitAll()
                         .requestMatchers("/api/reset-pass").permitAll()
                         //delete has to be for admin only
                         .requestMatchers("/api/delete/**").permitAll()
                         .requestMatchers("/api/profile", "/api/uploadImage","/api/edit","/api/detector/turn").hasRole("USER")
                         .requestMatchers("/api/contact/send/message").hasRole("USER")
                         .requestMatchers("/api/emergency/add", "/api/list").hasRole("ADMIN")
-                        .requestMatchers("/api/contact/get/messages", "/api/list").hasRole("ADMIN")
+                        .requestMatchers( "/api/list").hasRole("ADMIN")
                         .requestMatchers("/api/user/image/**").permitAll()
-                        .requestMatchers("/api/admin/user-list",
+                        .requestMatchers(
                                 "/api/admin/user-statis",
                                 "/api/admin/searching",
                                 "/api/done",
-                                "/api/admin/add").hasRole("ADMIN")
+                                "/api/admin/add",
+                                "/api/admin/enable-disable").hasRole("ADMIN")
+                        .requestMatchers("/api/admin/user/list").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
         JwtConfig jwtConfig = new JwtConfig(jwtTokenProvider);

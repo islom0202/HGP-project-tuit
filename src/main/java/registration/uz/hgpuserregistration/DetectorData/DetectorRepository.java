@@ -7,5 +7,4 @@ import registration.uz.hgpuserregistration.User.Entity.UserProfile;
 @Repository
 public interface DetectorRepository extends JpaRepository<DetectorData, String> {
     DetectorData findByUserId(UserProfile userId);
-
 }

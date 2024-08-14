@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/websocket-connection")
-                .setAllowedOrigins("https://high-gas-protection.vercel.app")
+                .setAllowedOrigins("https://high-gas-protection.vercel.app","http://localhost:3000")
                 .withSockJS();
     }
 

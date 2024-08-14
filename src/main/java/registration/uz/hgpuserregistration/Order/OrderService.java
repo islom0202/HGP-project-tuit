@@ -1,5 +1,8 @@
 package registration.uz.hgpuserregistration.Order;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,9 +12,7 @@ import registration.uz.hgpuserregistration.Exception.UserProfileNotFoundExceptio
 import registration.uz.hgpuserregistration.User.Entity.UserProfile;
 import registration.uz.hgpuserregistration.User.Respository.UserProfileRepository;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -40,7 +41,6 @@ public class OrderService {
             detectorData.setDetectorId(userProfile.getPassportSerialNumber());
             detectorData.setUserId(userProfile);
             detectorRepository.save(detectorData);
-            //userProfile.setDetectorData(detectorData);
             //saving order data in order table
             orderRepository.save(userOrder);
             return userProfile.getLogin();
@@ -50,8 +50,18 @@ public class OrderService {
     }
 
 
-    public List<UserOrder> findAll() {
-        return orderRepository.findAll();
+    public List<UserOrderResponseDto> findAll() {
+        List<UserOrder> order = orderRepository.findAll();
+        List<UserOrderResponseDto> orderResponseDtos = new ArrayList<>();
+        for (UserOrder orderItem : order) {
+            UserOrderResponseDto orderResponseDto = new UserOrderResponseDto();
+            orderResponseDto.setId(orderItem.getId());
+            orderResponseDto.setOrderAddress(orderItem.getOrderAddress());
+            orderResponseDto.setOrderDate(orderItem.getOrderDate());
+            orderResponseDto.setDelivered(orderItem.isDone());
+            orderResponseDto.setUserId(orderItem.getUserProfile().getId());
+        }
+        return orderResponseDtos;
     }
 
     @Transactional
@@ -67,8 +77,17 @@ public class OrderService {
         }
     }
 
-//    public OrderStatistic getOrderStatistics() {
-//        OrderStatistic orderStatistic = new OrderStatistic();
-//        //todo: set order json including number of the device sold and when they were sold
-//    }
+    public List<OrderStatistic> getOrderStatistics() {
+        try {
+            String jsonArrayString = orderRepository.getMonthlyCounts();
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode jsonNode = mapper.readTree(jsonArrayString);
+            String jsonArray = jsonNode.get("result").toString();
+
+            return mapper.readValue(jsonArray, new TypeReference<>() {});
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Collections.emptyList();
+        }
+    }
 }

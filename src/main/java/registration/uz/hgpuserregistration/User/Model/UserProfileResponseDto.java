@@ -5,6 +5,7 @@ import registration.uz.hgpuserregistration.User.Entity.Gender;
 
 @Data
 public class UserProfileResponseDto {
+    private Long id;
     private String firstname;
     private String lastname;
     private String email;
@@ -13,5 +14,4 @@ public class UserProfileResponseDto {
     private Gender gender;
     private boolean enabled;
     private String deviceId;
-    private String imageUrl;
 }

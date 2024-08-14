@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import registration.uz.hgpuserregistration.User.Entity.Gender;
 import registration.uz.hgpuserregistration.User.Model.UserProfileResponseDto;
 import registration.uz.hgpuserregistration.User.Model.UserStatistics;
+import registration.uz.hgpuserregistration.User.Service.UserProfileService;
 
 import java.util.List;
 
@@ -15,8 +16,9 @@ import java.util.List;
 public class AdminPanelController {
 
     private final AdminPanelService adminPanelService;
+    private final UserProfileService userProfileService;
 
-    @GetMapping("/user-list")
+    @GetMapping("/user/list")
     public ResponseEntity<List<UserProfileResponseDto>> getUserList() {
         return ResponseEntity.ok(adminPanelService.getUserList());
     }
@@ -45,5 +47,11 @@ public class AdminPanelController {
     @PostMapping("/add")
     public ResponseEntity<?> addAdmin(@RequestBody AdminRequest request) {
         return ResponseEntity.ok(adminPanelService.save(request));
+    }
+
+    @PostMapping("/enable-disable")
+    public ResponseEntity<?> enableOrDisableUser(@RequestBody EnableDisableUser request) {
+        userProfileService.enableOrDisable(request);
+        return ResponseEntity.status(200).build();
     }
 }

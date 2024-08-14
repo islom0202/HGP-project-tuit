@@ -2,14 +2,14 @@ package registration.uz.hgpuserregistration.ContactSupport.Service;
 
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import registration.uz.hgpuserregistration.ContactSupport.Entity.ContactUs;
 import registration.uz.hgpuserregistration.ContactSupport.Model.MessageDto;
 import registration.uz.hgpuserregistration.ContactSupport.Repository.ContactUsRepository;
 import registration.uz.hgpuserregistration.Email.EmailService;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -34,6 +34,8 @@ public class ContactUsService {
     }
 
     public List<ContactUs> findAll() {
-        return contactUsRepository.findAll();
+        List<ContactUs> list = new ArrayList<>(contactUsRepository.findAll(Sort.by(Sort.Direction.DESC, "sentAt")));
+        //Collections.reverse(list);
+        return list;
     }
 }
