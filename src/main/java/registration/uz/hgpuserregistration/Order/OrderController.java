@@ -1,6 +1,5 @@
 package registration.uz.hgpuserregistration.Order;
 
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,9 +11,6 @@ import registration.uz.hgpuserregistration.User.Service.UserProfileService;
 import java.util.List;
 
 @RestController
-@SecurityRequirement(
-        name = "bearerAuth"
-)
 @RequestMapping("/api")
 @AllArgsConstructor
 public class OrderController {
@@ -42,19 +38,19 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<UserOrderResponseDto>> getAllOrders() {
+    @GetMapping("/order/list")
+    public ResponseEntity<?> getAllOrders() {
         return ResponseEntity.ok(orderService.findAll());
     }
 
-    @PostMapping("/done")
+    @PostMapping("/delivered")
     public ResponseEntity<Object> isDone(@RequestParam("userId") Long userId) {
         orderService.isDone(userId);
         return ResponseEntity.ok("done");
     }
 
     @GetMapping("/order-statis")
-    public ResponseEntity<List<OrderStatistic>> getOrderStatistics() {
-        return ResponseEntity.ok(orderService.getOrderStatistics());
+    public ResponseEntity<List<OrderStatistic>> getOrderStatistics(@RequestParam("year") int year) {
+        return ResponseEntity.ok(orderService.getOrderStatisticsByYear(year));
     }
 }

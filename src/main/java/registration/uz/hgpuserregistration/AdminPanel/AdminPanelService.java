@@ -62,8 +62,7 @@ public class AdminPanelService {
         List<UserProfileResponseDto> userProfileResponseDtos = new ArrayList<>();
         for (UserProfile userProfile : userProfiles) {
             UserProfileResponseDto userProfileResponseDto = new UserProfileResponseDto();
-            DetectorData detectorData = detectorRepository.findByUserId(userProfile);
-            String detectorId = detectorData.getDetectorId();
+            String detectorId = detectorRepository.getDetectorId(userProfile.getId());
             userProfileResponseDto.setId(userProfile.getId());
             userProfileResponseDto.setFirstname(userProfile.getFirstname());
             userProfileResponseDto.setLastname(userProfile.getLastname());

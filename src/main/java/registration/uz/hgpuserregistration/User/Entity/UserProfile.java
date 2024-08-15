@@ -38,15 +38,9 @@ public class UserProfile implements Serializable {
     private Boolean enabled = false;
     @Column(name = "locked")
     private Boolean locked = false;
-    //    @OneToOne(mappedBy = "userProfile", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private UserImage userImage;
     @Lob
     @Basic(fetch = FetchType.LAZY)
     private byte[] image;
-//    @OneToOne(mappedBy = "userId", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "detector_data")
-//    private DetectorData detectorData;
-
     @JoinColumn(name = "accessStatus")
     private Boolean accessStatus;
 

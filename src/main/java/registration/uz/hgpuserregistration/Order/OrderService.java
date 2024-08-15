@@ -1,7 +1,6 @@
 package registration.uz.hgpuserregistration.Order;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -60,6 +59,7 @@ public class OrderService {
             orderResponseDto.setOrderDate(orderItem.getOrderDate());
             orderResponseDto.setDelivered(orderItem.isDone());
             orderResponseDto.setUserId(orderItem.getUserProfile().getId());
+            orderResponseDtos.add(orderResponseDto);
         }
         return orderResponseDtos;
     }
@@ -77,14 +77,35 @@ public class OrderService {
         }
     }
 
-    public List<OrderStatistic> getOrderStatistics() {
+    public List<OrderStatistic> getOrderStatisticsByYear(int val) {
+        String year = String.valueOf(val);
         try {
-            String jsonArrayString = orderRepository.getMonthlyCounts();
+            String jsonArrayString = orderRepository.getMonthlyCountsByYear(year);
             ObjectMapper mapper = new ObjectMapper();
-            JsonNode jsonNode = mapper.readTree(jsonArrayString);
-            String jsonArray = jsonNode.get("result").toString();
 
-            return mapper.readValue(jsonArray, new TypeReference<>() {});
+            List<OrderStatistic> orderStatistics = mapper.readValue(
+                    jsonArrayString, new TypeReference<>() {
+                    }
+            );
+
+            Set<Integer> existingMonths = new HashSet<>();
+            for (OrderStatistic orderStatistic : orderStatistics) {
+                existingMonths.add(Integer.parseInt(orderStatistic.getMonth()));
+            }
+            for (int i = 1; i <= 12; i++) {
+                if (!existingMonths.contains(i)) {
+                    OrderStatistic orderStatistic = new OrderStatistic();
+                    orderStatistic.setYear(year);
+                    orderStatistic.setMonth(String.format("%02d", i));
+                    orderStatistic.setIncome(0);
+                    orderStatistic.setNumber(0);
+                    orderStatistics.add(orderStatistic);
+                }
+            }
+            orderStatistics.sort(Comparator.comparing(OrderStatistic::getYear)
+                    .thenComparing(OrderStatistic::getMonth, Comparator.comparingInt(Integer::parseInt)));
+
+            return orderStatistics;
         } catch (Exception e) {
             e.printStackTrace();
             return Collections.emptyList();
