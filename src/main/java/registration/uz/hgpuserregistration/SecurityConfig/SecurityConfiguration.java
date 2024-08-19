@@ -10,6 +10,8 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.firewall.DefaultHttpFirewall;
+import org.springframework.security.web.firewall.HttpFirewall;
 import registration.uz.hgpuserregistration.JWT.JwtConfig;
 import registration.uz.hgpuserregistration.JWT.TokenProvider.JwtTokenProvider;
 
@@ -49,15 +51,17 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/profile", "/api/uploadImage","/api/edit","/api/detector/turn").hasRole("USER")
                         .requestMatchers("/api/contact/send/message").hasRole("USER")
                         .requestMatchers("/api/user/image/**").permitAll()
-                        .requestMatchers("/api/contact/get/messages",
+                        .requestMatchers(
                                 "/api/order-statis",
                                 "/api/order/list",
                                 "/api/admin/user-statis",
                                 "/api/admin/searching",
                                 "/api/delivered",
                                 "/api/admin/add",
-                                "/api/admin/enable-disable").hasRole("ADMIN")
-                        .requestMatchers("/api/admin/user/list").permitAll()
+                                "/api/admin/enable-disable",
+                                "/api/admin/user/list",
+                                "/api/contact/read",
+                                "/api/contact/count").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
         JwtConfig jwtConfig = new JwtConfig(jwtTokenProvider);

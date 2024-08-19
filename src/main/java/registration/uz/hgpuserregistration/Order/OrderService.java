@@ -61,6 +61,8 @@ public class OrderService {
             orderResponseDto.setUserId(orderItem.getUserProfile().getId());
             orderResponseDtos.add(orderResponseDto);
         }
+        orderResponseDtos.sort(Comparator.comparing(UserOrderResponseDto::getId)
+                .thenComparing(UserOrderResponseDto::getOrderDate));
         return orderResponseDtos;
     }
 

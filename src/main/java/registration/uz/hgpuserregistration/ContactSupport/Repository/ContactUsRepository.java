@@ -9,4 +9,8 @@ import java.util.List;
 
 @Repository
 public interface ContactUsRepository extends JpaRepository<ContactUs, Long> {
+    ContactUs findByIdAndEmail(Long id, String email);
+
+    @Query("select count(*) from ContactUs where isRead = false ")
+    int countMessage();
 }

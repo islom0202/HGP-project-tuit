@@ -29,7 +29,7 @@ public class UserProfileRequest {
     @Size(min = 9)
     private String passportSerialNumber;
     @NotEmpty
-    @Size(min = 12)
+    @Size(min = 12, max = 15)
     private String phone;
     @Enumerated(EnumType.STRING)
     private Gender gender;

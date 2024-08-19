@@ -13,6 +13,7 @@ import registration.uz.hgpuserregistration.User.Model.UserStatistics;
 import registration.uz.hgpuserregistration.User.Respository.UserProfileRepository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -74,6 +75,7 @@ public class AdminPanelService {
             userProfileResponseDto.setDeviceId(detectorId);
             userProfileResponseDtos.add(userProfileResponseDto);
         }
+        userProfileResponseDtos.sort(Comparator.comparing(UserProfileResponseDto::getId));
         return userProfileResponseDtos;
     }
 
