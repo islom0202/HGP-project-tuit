@@ -1,5 +1,6 @@
 package registration.uz.hgpuserregistration.SecurityConfig;
 
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -10,25 +11,21 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.firewall.DefaultHttpFirewall;
-import org.springframework.security.web.firewall.HttpFirewall;
 import registration.uz.hgpuserregistration.JWT.JwtConfig;
 import registration.uz.hgpuserregistration.JWT.TokenProvider.JwtTokenProvider;
 
 @Configuration
 @EnableWebSecurity
+@AllArgsConstructor
 public class SecurityConfiguration {
     private final JwtTokenProvider jwtTokenProvider;
+//    private final CustomCorsFilter customCorsFilter;
     private final String[] SWAGGER_URLS = {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-ui.html",
             "/webjars/**"
     };
-
-    public SecurityConfiguration(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,6 +42,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/order").permitAll()
                         .requestMatchers("/api/login").permitAll()
                         .requestMatchers("/api/verify").permitAll()
+                        .requestMatchers("/actuator/**").permitAll()
                         .requestMatchers("/api/reset-pass").permitAll()
                         //delete has to be for admin only
                         .requestMatchers("/api/delete/**").permitAll()
@@ -64,6 +62,7 @@ public class SecurityConfiguration {
                                 "/api/contact/count").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 );
+        //http.addFilterBefore(customCorsFilter, UsernamePasswordAuthenticationFilter.class);
         JwtConfig jwtConfig = new JwtConfig(jwtTokenProvider);
         jwtConfig.configure(http);
         return http.build();
@@ -79,3 +78,4 @@ public class SecurityConfiguration {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }
+

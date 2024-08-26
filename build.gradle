@@ -39,8 +39,20 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.9'
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'io.micrometer:micrometer-core'
+    implementation 'io.micrometer:micrometer-registry-prometheus'
 }
 
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+
+// java, SDK version 17
+// gradle 4.4.1
+// database: PostgreSQL
+// cpu: 2 yadro
+// memory: 10 GB
+// RAM: 8-10 GB
+// OS: linux(ubuntu), windows
